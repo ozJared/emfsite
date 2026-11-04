@@ -89,8 +89,9 @@ if database_url:
         database_url,
         conn_max_age=0,
         conn_health_checks=True,
-        ssl_require=True,
     )}
+    if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+        DATABASES["default"].setdefault("OPTIONS", {}).setdefault("sslmode", "require")
 elif env("POSTGRES_DB"):
     DATABASES = {"default": {
         "ENGINE": "django.db.backends.postgresql",
