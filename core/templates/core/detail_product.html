@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block title %}{{ item.title }} · {{ site.name }}{% endblock %}
+{% block desc %}{% firstof item.summary site.blurb %}{% endblock %}
+{% block ogtitle %}{{ item.title }}{% endblock %}
+{% block ogdesc %}{% firstof item.summary site.blurb %}{% endblock %}
+{% block content %}
+<div class="sec page">
+<a class="back" href="{% url 'list' kind %}">← {{ labels|get:kind }}</a>
+<div class="product-layout">
+<div class="product-gallery">
+<div class="art big product-art" style="{% art item.hue %}">{% if item.card_image_url %}<img id="mainpic" src="{{ item.card_image_url }}" alt="{{ item.title }}" decoding="async"{% crop item %}>{% endif %}{% if item.is_product %}<span class="product-price-badge">{{ item.price|money:site.currency }}</span>{% endif %}</div>
+{% if item.gallery.all or item.card_image_url %}<div class="thumbs">
+{% if item.card_image_url %}<button type="button" class="th" data-thumb="{{ item.card_image_url }}" aria-label="Show main image"><img src="{{ item.card_image_url }}" alt="" loading="lazy"></button>{% endif %}
+{% for g in item.gallery.all %}<button type="button" class="th" data-thumb="{{ g.image.url }}" aria-label="Show image {{ forloop.counter }}"><img src="{{ g.image.url }}" alt="" loading="lazy"></button>{% endfor %}
+</div>{% endif %}
+</div>
+<div class="product-info">
+<small class="acc">{% if item.is_ticket %}Event ticket{% else %}{{ labels|get:kind }}{% endif %}</small>{% if not item.is_published %} <span class="pill">Draft: only you can see this</span>{% endif %}
+<h1 class="dt">{{ item.title }}</h1>
+{% if item.is_ticket %}<p class="mut">Event date: {{ item.date|date:"F j, Y" }} · A unique ticket with QR code is issued after the order is marked paid.</p>{% endif %}
+<div class="product-actions">
+{% if item.spotify_id %}<iframe class="spotify-track-embed" src="https://open.spotify.com/embed/track/{{ item.spotify_id }}?utm_source=generator" title="Listen to {{ item.title }} on Spotify" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>{% endif %}
+{% if item.is_product %}<form class="purchase-form" method="post" action="{% url 'cart_add' item.pk %}">{% csrf_token %}<label class="qty-label">Quantity<input type="number" name="qty" value="1" min="1" max="20" required></label><button class="btn solid">{% if item.is_ticket %}Get tickets{% else %}Add to order{% endif %}</button></form>
+{% elif item.link %}<a class="btn solid product-primary-action" href="{{ item.link }}" target="_blank" rel="noopener noreferrer">Listen now</a>
+{% else %}<a class="btn solid product-primary-action" href="{% url 'contact' %}">Enquire</a>{% endif %}
+<div class="product-secondary-actions">
+{% if site.wa_digits %}{% with q="Hi, I have a question about "|add:item.title %}<a class="btn ghost icon-action whatsapp-action" href="https://wa.me/{{ site.wa_digits }}?text={{ q|urlencode }}" target="_blank" rel="noopener noreferrer" aria-label="Ask about {{ item.title }} on WhatsApp" title="Ask on WhatsApp">{% icon 'whatsapp' 22 %}</a>{% endwith %}{% endif %}
+{% if is_owner %}<a class="btn ghost icon-action" href="{% url 'dash_item_edit' item.pk %}" aria-label="Edit {{ item.title }}" title="Edit this item">{% icon 'edit' 19 %}</a>{% endif %}
+</div>
+</div>
+{% if item.summary %}<p class="product-summary">{{ item.summary }}</p>{% endif %}
+<div class="mut lede">{% for p in item.paragraphs %}<p>{{ p }}</p>{% empty %}{% if not item.summary %}<p>More details coming soon.</p>{% endif %}{% endfor %}</div>
+</div>
+</div>
+{% if more %}<h2 class="mt">More</h2><div class="grid">{% for i in more %}{% include 'core/sections/_card.html' %}{% endfor %}</div>{% endif %}
+</div>
+{% endblock %}

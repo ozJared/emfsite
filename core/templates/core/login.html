@@ -1,0 +1,8 @@
+{% extends 'core/base.html' %}
+{% block title %}Owner login · {{ site.name }}{% endblock %}
+{% block content %}<div class="sec page narrow"><h1 class="dt">Owner login</h1>
+<p class="mut">Site owners and the platform superuser can sign in here. Your account role determines which controls you can access.</p>
+<form class="form" method="post">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+{% for e in form.non_field_errors %}<p class="err">{{ e }}</p>{% endfor %}
+{{ form.username }}{{ form.password }}
+<button class="btn solid">Log in</button></form></div>{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'core/dashboard/base.html' %}
+{% load site_tags %}
+{% block dash %}
+<div class="bar2"><a class="chip{% if not st %} on{% endif %}" href="{% url 'dash_orders' %}">All</a>{% for k, v in statuses %}<a class="chip{% if st == k %} on{% endif %}" href="?status={{ k }}">{{ v }}</a>{% endfor %}</div>
+<div class="list">{% for o in rows %}<a class="row2" href="{% url 'dash_order' o.pk %}"><span>#{{ o.pk }} · {{ o.name }} · {{ o.phone }}<small>{{ o.created|date:"M j, Y H:i" }} · {% for l in o.lines.all %}{{ l.qty }}× {{ l.title }}{% if not forloop.last %}, {% endif %}{% endfor %}</small></span><span class="pill">{{ o.get_status_display }}</span><b>{{ o.total|money:o.currency }}</b></a>{% empty %}<p class="mut">No orders here.</p>{% endfor %}</div>
+{% endblock %}

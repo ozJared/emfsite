@@ -1,0 +1,18 @@
+{% load site_tags %}
+<div class="stage {% if site.hero_image %}{{ site.hero_mode }}{% else %}orb{% endif %}" style="--fx:{{ site.fx }}%;--fy:{{ site.fy }}%">
+{% vis 'hero.aurora' 'aurora-control' %}<i class="aur a1"></i><i class="aur a2"></i>{% endvis %}
+{% vis 'hero.ghost' 'ghost' %}<span aria-hidden="true">{% for c in site.ghost %}<span style="--i:{{ forloop.counter0 }}">{{ c }}</span>{% endfor %}</span>{% endvis %}
+<div class="subject{% offcls 'hero.img' %}" data-img="hero" data-vis="hero.img">
+{% if site.hero_image %}{% if site.hero_mode == 'photo' %}<i class="bd" style="background-image:url('{{ site.hero_image.url }}')"></i>{% endif %}<img src="{{ site.hero_image.url }}" alt="{{ site.name }}" fetchpriority="high" decoding="async">{% else %}<i class="orb"></i>{% endif %}
+</div>
+<div class="hl">
+{% t 'hero.h' site.name 'h1' %}
+{% vis 'hero.sub' %}{% t 'hero.s' site.tagline 'p' 'tag' %}{% endvis %}
+{% vis 'hero.p' %}{% t 'hero.p' site.blurb 'p' 'soft' %}{% endvis %}
+</div>
+<div class="hr">
+{% if spotify_profile.popular_track.id %}{% vis 'hero.spotify' %}<div class="spotify-hero"><div class="spotify-credit"><b>{{ spotify_profile.popular_track.name }}</b><a href="{{ spotify_profile.popular_track.url }}" target="_blank" rel="noopener noreferrer">{{ spotify_profile.name }} on Spotify</a></div><iframe src="https://open.spotify.com/embed/track/{{ spotify_profile.popular_track.id }}?utm_source=generator" title="Listen to {{ spotify_profile.popular_track.name }} by {{ spotify_profile.name }}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>{% endvis %}{% else %}{% if featured %}{% vis 'hero.card' %}<a class="glass feat" href="{{ featured.get_absolute_url }}"><i style="{% if featured.card_image_url %}background:url('{{ featured.card_image_url }}') center/cover{% else %}{% art featured.hue %}{% endif %}"></i><span><small>{{ labels.catalog }}</small><b>{{ featured.title }}</b></span></a>{% endvis %}{% endif %}{% endif %}
+{% vis 'hero.cta' %}<a class="btn" href="{% if on.catalog %}{% url 'list' 'catalog' %}{% else %}{% url 'contact' %}{% endif %}">{% t 'hero.c' site.cta %}</a>{% endvis %}
+</div>
+{% vis 'hero.down' 'down-control' %}<a href="#next" aria-label="Scroll down" data-scroll>⌄</a>{% endvis %}
+</div>

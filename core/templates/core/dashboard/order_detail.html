@@ -1,0 +1,23 @@
+{% extends 'core/dashboard/base.html' %}
+{% load site_tags %}
+{% block dash %}
+<a class="back" href="{% url 'dash_orders' %}">← Orders</a>
+<h3>Order #{{ o.pk }} · {{ o.created|date:"M j, Y H:i" }}</h3>
+<div class="two top">
+<div class="list">
+{% for l in o.lines.all %}<div class="row2"><span>{{ l.qty }} × {{ l.title }}<small>{{ l.price|money:o.currency }} each</small></span><b>{{ l.subtotal|money:o.currency }}</b></div>{% endfor %}
+<p class="tot">Total <b>{{ o.total|money:o.currency }}</b></p>
+{% with attempts=o.payment_attempts.all %}{% if attempts %}<h4>Paystack payment attempts</h4>{% for attempt in attempts %}<div class="row2"><span>{{ attempt.get_status_display }}<small>Reference {{ attempt.reference }} · {{ attempt.created|date:"M j, Y H:i" }}</small></span></div>{% endfor %}{% endif %}{% endwith %}
+</div>
+<div>
+<p><b>{{ o.name }}</b><br>{{ o.phone }}</p>
+{% if o.address %}<p class="mut">{{ o.address|linebreaksbr }}</p>{% endif %}
+{% if o.note %}<p class="mut">Note: {{ o.note }}</p>{% endif %}
+<form class="form" method="post">{% csrf_token %}
+<label class="lb">Status<select name="status">{% for k, v in statuses %}<option value="{{ k }}"{% if o.status == k %} selected{% endif %}>{{ v }}</option>{% endfor %}</select></label>
+<button class="btn solid">Update status</button></form>
+{% if tickets %}<h3>Issued tickets</h3><div class="list">{% for ticket in tickets %}<a class="row2" href="{% url 'ticket_detail' ticket.token %}" target="_blank" rel="noopener noreferrer"><span>{{ ticket.order_item.title }}<small>{{ ticket.code }}</small></span><span class="pill">Open ticket</span></a>{% endfor %}</div>{% endif %}
+<div class="row"><a class="btn ghost" href="{{ reply }}" target="_blank" rel="noopener noreferrer">Reply on WhatsApp</a>
+<form method="post" action="{% url 'dash_order_delete' o.pk %}" onsubmit="return confirm('Delete this order?')">{% csrf_token %}<button class="btn ghost">Delete order</button></form></div>
+</div></div>
+{% endblock %}

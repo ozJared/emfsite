@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% block title %}Ticket {{ ticket.code }} · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="sec page ticket-page">
+<a class="back no-print" href="{% url 'order_done_token' ticket.order_item.order.public_token %}">← Order status</a>
+<article class="ticket-card">
+<div class="ticket-details">
+<p class="acc">EVENT TICKET</p>
+<h1 class="dt">{{ ticket.order_item.title }}</h1>
+{% if item %}<p>{{ item.date|date:"F j, Y" }}</p>{% endif %}
+<p>Attendee: {{ ticket.order_item.order.name }}</p>
+<p class="ticket-code">Ticket code <strong>{{ ticket.code }}</strong></p>
+<p class="pill">{% if ticket.is_valid %}Valid{% else %}Not valid — payment is not confirmed or this order is cancelled{% endif %}</p>
+</div>
+<div class="ticket-qr"><img src="{{ qr_data }}" alt="QR code for ticket {{ ticket.code }}"><small>Scan to verify ticket</small>{% if ticket.is_valid %}<a class="btn ghost no-print" href="{% url 'ticket_qr_download' ticket.token %}">Download QR code</a>{% endif %}</div>
+</article>
+<div class="row no-print"><button class="btn solid" type="button" onclick="window.print()">Print ticket</button><a class="btn ghost" href="{% url 'ticket_verify' ticket.token %}">Verify ticket</a></div>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% load site_tags %}
+{% with pk=i.pk|stringformat:'s' %}{% with viskey='item-'|add:pk %}{% vis viskey 'cw' %}<a class="card{% if not i.is_published %} off{% endif %}" href="{{ i.get_absolute_url }}">
+<div class="art" style="{% art i.hue %}">{% if i.card_image_url %}<img src="{{ i.card_image_url }}" alt="{{ i.title }}" loading="lazy" decoding="async"{% crop i %}>{% endif %}</div>
+<div class="cm"><small>{% if i.kind == 'catalog' %}{{ labels|get:i.kind }}{% else %}{{ i.date|date:"M j, Y" }}{% endif %}</small><h3>{{ i.title }}</h3><p>{% if i.is_product %}{{ i.price|money:site.currency }}{% else %}{{ i.summary }}{% endif %}</p><span class="pill">{% t 'card.details' 'Details' %}</span></div>
+</a>{% if edit %}<div class="ctl"><button type="button" data-item-toggle="{{ i.pk }}" aria-label="Show or hide">{% icon 'eye' 16 %}</button><a href="{% url 'dash_item_edit' i.pk %}">Edit</a><a href="{% url 'dash_item_delete' i.pk %}">Delete</a></div>{% endif %}
+{% endvis %}{% endwith %}{% endwith %}

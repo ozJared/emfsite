@@ -1,0 +1,8 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block content %}{% for s in sections %}
+<section class="{% if s.id == 'hero' %}hero{% else %}sec{% endif %}{% if not s.on %} off{% endif %}" data-sec="{{ s.id }}">
+{% include 'core/sections/'|add:s.id|add:'.html' %}
+</section>
+{% if s.id == 'hero' and s.on %}{% vis 'marq' 'marq' %}<div>{% t 'marq.text' marquee %}</div><div class="rev" aria-hidden="true">{{ marquee }}</div>{% endvis %}{% endif %}
+{% endfor %}{% endblock %}

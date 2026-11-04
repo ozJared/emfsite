@@ -1,0 +1,4 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block title %}{{ labels|get:kind }} · {{ site.name }}{% endblock %}
+{% block content %}<div class="sec page">{% include 'core/sections/_grid.html' %}</div>{% endblock %}

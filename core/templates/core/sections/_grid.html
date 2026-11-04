@@ -1,0 +1,4 @@
+{% load site_tags %}
+<div class="sec-h">{% t kind|add:'.t' labels|get:kind 'h2' %}{% vis kind|add:'.s' %}{% t kind|add:'.d' 'Latest first.' 'p' 'mut' %}{% endvis %}
+{% if edit %}<a class="btn solid" href="{% url 'dash_item_new' kind %}">+ New {{ labels|get:kind }}</a>{% endif %}</div>
+<div class="grid">{% for i in list %}{% include 'core/sections/_card.html' %}{% empty %}<p class="mut">Nothing here yet.</p>{% endfor %}</div>

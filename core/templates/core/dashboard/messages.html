@@ -1,0 +1,6 @@
+{% extends 'core/dashboard/base.html' %}
+{% block dash %}
+<div class="list">{% for m in rows %}<div class="card pad{% if m.is_read %} dim{% endif %}"><b>{{ m.name }}</b> <a href="mailto:{{ m.email }}">{{ m.email }}</a> <small class="mut">{{ m.created|date:"M j, Y H:i" }}</small>
+<p>{{ m.body|linebreaksbr }}</p>
+<form method="post" action="{% url 'dash_message' m.pk %}" class="row">{% csrf_token %}<button class="btn ghost" name="do" value="read">{% if m.is_read %}Mark unread{% else %}Mark read{% endif %}</button><button class="btn ghost" name="do" value="delete">Delete</button></form></div>{% empty %}<p class="mut">No messages yet.</p>{% endfor %}</div>
+{% endblock %}

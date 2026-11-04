@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block title %}Your order · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="sec page">
+<h1 class="dt">Your order</h1>
+{% if lines %}
+<div class="two top">
+<div class="list">
+{% for l in lines %}<div class="row2">
+<i style="{% if l.item.card_image_url %}background:url('{{ l.item.card_image_url }}') center/cover{% else %}{% art l.item.hue %}{% endif %}"></i>
+<span>{{ l.qty }} × {{ l.item.title }}<small>{{ l.item.price|money:site.currency }} each</small></span>
+<b>{{ l.sub|money:site.currency }}</b>
+<form method="post" action="{% url 'cart_remove' l.item.pk %}">{% csrf_token %}<button aria-label="Remove {{ l.item.title }}">×</button></form>
+</div>{% endfor %}
+<p class="tot">Total <b>{{ total|money:site.currency }}</b></p>
+</div>
+<div class="checkout-summary"><h2>Ready to order?</h2><p class="mut">Review your items, then enter your contact and delivery details on checkout.</p><a class="btn solid" href="{% url 'checkout' %}">Continue to checkout</a></div>
+</div>
+{% else %}<p class="mut">Your order is empty. <a href="{% if on.catalog %}{% url 'list' 'catalog' %}{% else %}{% url 'home' %}{% endif %}">Browse the catalog</a>.</p>{% endif %}
+</div>
+{% endblock %}

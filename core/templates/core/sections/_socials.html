@@ -1,0 +1,5 @@
+{% load site_tags %}
+<div class="socs" id="socs"><button class="sb sbt" type="button" data-socs aria-label="Open social links" title="Social links" aria-expanded="false">{% icon 'link' %}{% icon 'close' %}</button>
+<nav class="social-menu" aria-label="Social profiles">
+{% for x in socs %}<span class="sitem{% offcls x.key %}" data-vis="{{ x.key }}"><a class="sb" href="{{ x.u }}" target="_blank" rel="noopener noreferrer" aria-label="{{ x.label }}" title="{{ x.label }}" tabindex="-1">{% icon x.n %}</a></span>{% endfor %}
+</nav></div>

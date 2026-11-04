@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block title %}Checkout · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="sec page">
+<a class="back" href="{% url 'cart' %}">← Your order</a>
+<h1 class="dt">Checkout</h1>
+{% if payment_enabled %}<p class="mut lede">Continue to Paystack to pay by card or bank transfer. Card details are entered securely on Paystack, not stored by this store. Bank transfer availability depends on your Paystack account.</p>{% else %}<p class="mut lede">Online payment is unavailable right now. You can save an unpaid order, but no payment will be taken and no ticket will be issued until payment is confirmed.</p>{% endif %}
+<div class="checkout-layout">
+<form class="form checkout-form" method="post" action="{% url 'checkout' %}">{% csrf_token %}
+{% for e in form.non_field_errors %}<p class="err">{{ e }}</p>{% endfor %}
+{% for f in form %}<label class="lb">{{ f.label }}{{ f }}{% for e in f.errors %}<span class="err">{{ e }}</span>{% endfor %}</label>{% endfor %}
+<button class="btn solid">{% if payment_enabled %}Continue to Paystack{% else %}Save unpaid order{% endif %}</button>
+</form>
+<aside class="checkout-lines"><h2>Order summary</h2>
+{% for l in lines %}<div class="row2">
+<i style="{% if l.item.card_image_url %}background:url('{{ l.item.card_image_url }}') center/cover{% else %}{% art l.item.hue %}{% endif %}"></i>
+<span>{{ l.qty }} × {{ l.item.title }}<small>{{ l.item.price|money:site.currency }} each</small></span><b>{{ l.sub|money:site.currency }}</b>
+</div>{% endfor %}
+<p class="tot">Total <b>{{ total|money:site.currency }}</b></p>
+</aside>
+</div></div>
+{% endblock %}

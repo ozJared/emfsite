@@ -1,0 +1,20 @@
+<div class="ownbar">
+{% if is_platform_admin %}
+<form method="post" action="{% url 'edit_toggle' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="{% if edit %}on{% endif %}">{% if edit %}Editing · tap to save{% else %}Edit mode{% endif %}</button></form>
+{% if edit %}<button type="button" id="sitebtn" aria-expanded="false">Site</button>{% endif %}
+{% endif %}
+<a href="{% url 'dash' %}">Dashboard</a>
+<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Log out</button></form>
+</div>
+{% if edit %}
+{% load site_tags %}
+<div id="sitepanel" class="panel glass" hidden>
+<h4>Site type</h4>
+<div class="bar2">{% for k, v in site_types %}<button type="button" class="chip{% if site.site_type == k %} on{% endif %}" data-preset="{{ k }}">{{ v }}</button>{% endfor %}</div>
+<p class="mut small">Changes the look, labels and sections. Your items, orders and images stay.</p>
+<h4>Theme</h4>
+<div class="bar2">{% for k, v in themes %}<button type="button" class="chip{% if site.theme == k %} on{% endif %}" data-theme-set="{{ k }}">{{ v }}</button>{% endfor %}</div>
+<h4>Sections on this page</h4>
+<div class="bar2">{% for s in section_list %}<button type="button" class="chip{% if s.on %} on{% endif %}" data-sec-toggle="{{ s.id }}">{% with l=labels|get:s.id %}{% firstof l s.id %}{% endwith %}</button>{% endfor %}</div>
+</div>
+{% endif %}

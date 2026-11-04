@@ -1,0 +1,40 @@
+{% load static site_tags %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}{{ site.name }}{% if site.tagline %} · {{ site.tagline }}{% endif %}{% endblock %}</title>
+<meta name="description" content="{% block desc %}{% firstof site.meta_description site.blurb %}{% endblock %}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{% block ogtitle %}{{ site.name }}{% endblock %}">
+<meta property="og:description" content="{% block ogdesc %}{% firstof site.meta_description site.blurb %}{% endblock %}">
+{% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#09090a">
+{% if is_owner %}<meta name="csrf" content="{{ csrf_token }}"><meta name="robots" content="noindex">{% endif %}
+<link rel="preload" href="{% static 'core/fonts/playfair-display-latin-700-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}?v=27">
+<script>if(!matchMedia('(prefers-reduced-motion:reduce)').matches)document.documentElement.classList.add('js')</script>
+</head>
+<body data-theme="{{ site.theme }}"{% if edit %} class="edit"{% endif %}>
+<a class="skip" href="#app">Skip to content</a>
+<header id="hd"><div class="bar glass">
+{% vis 'header.logo' 'head-toggle' %}<a class="logo" href="{% url 'home' %}">{% t 'logo' site.name %}</a>{% endvis %}
+<nav id="nv" aria-label="Main">{% for url, label, active, key in nav %}{% vis key 'nav-item' %}<a href="{{ url }}"{% if active %} class="on" aria-current="page"{% endif %}>{% t key label %}</a>{% endvis %}{% endfor %}</nav>
+<div class="ic">
+{% if socs %}{% vis 'header.socials' 'head-toggle' %}{% include 'core/sections/_socials.html' %}{% endvis %}{% endif %}
+{% if has_shop or edit %}{% vis 'header.cart' 'head-toggle' %}<a href="{% url 'cart' %}" aria-label="Order basket">{% icon 'bag' %}<b>{% if cart_count %}{{ cart_count }}{% endif %}</b></a>{% endvis %}{% endif %}
+{% if not is_owner %}<a id="secret-login" class="head-toggle secret-login" href="{% url 'login' %}" aria-label="Owner login" title="Owner login" hidden>{% icon 'user' %}</a>{% endif %}
+{% vis 'header.menu' 'head-toggle head-menu' %}<button id="mb" type="button" aria-label="Menu" aria-expanded="false">{% icon 'menu' %}</button>{% endvis %}
+</div></div></header>
+<main id="app">{% block content %}{% endblock %}</main>
+<footer id="ft"><div class="ft">
+{% now "Y" as yr %}{% with d="© "|add:yr|add:" "|add:site.name|add:". All rights reserved." %}{% vis 'footer.copy' %}{% t 'foot' d %}{% endvis %}{% endwith %}
+{% if footer_socials %}{% vis 'footer.social-note' %}<nav class="footer-socials" aria-label="Social links">{% for social in footer_socials %}<a href="{{ social.url }}" target="_blank" rel="noopener noreferrer">{{ social.label }}</a>{% endfor %}</nav>{% endvis %}{% endif %}
+</div></footer>
+{% if is_owner %}{% include 'core/sections/_owner.html' %}{% endif %}
+<div id="toast" role="status" data-flash="{% for m in messages %}{{ m }}{% if not forloop.last %} {% endif %}{% endfor %}"></div>
+<script src="{% static 'core/js/public.js' %}?v=10" defer></script>
+{% if edit %}<script src="{% static 'core/js/edit.js' %}?v=8" defer></script>{% endif %}
+</body>
+</html>

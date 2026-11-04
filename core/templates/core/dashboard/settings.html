@@ -1,0 +1,33 @@
+{% extends 'core/dashboard/base.html' %}
+{% block dash %}
+{% if is_platform_admin %}
+<h3>Site type</h3>
+<form method="post" action="{% url 'dash_preset' %}" class="bar2">{% csrf_token %}<input type="hidden" name="next" value="{% url 'dash_settings' %}">
+{% for p in presets %}<button class="chip{% if p == current %} on{% endif %}" name="type" value="{{ p }}">{{ p }}</button>{% endfor %}</form>
+<p class="mut">Switching type changes the theme, labels and which sections are on. Your items, orders, messages and images are never deleted.</p>
+<h3>Site settings</h3>
+{% else %}
+<h3>Owner profile</h3>
+<p class="mut">Manage your contact details and social profiles. Site design and layout are managed by the platform administrator.</p>
+{% endif %}
+{% if not recipient_ready or not smtp_ready %}<p class="notice warn">Email alerts are not ready.{% if not recipient_ready %} Set a notification email below.{% endif %}{% if not smtp_ready %} Add a newly generated Gmail app password to EMAIL_HOST_PASSWORD in the local .env file, then restart the server. Revoke the app password previously shared in chat.{% endif %} Orders and messages will still be saved in the dashboard.</p>{% endif %}
+<form class="form formw" method="post" enctype="multipart/form-data">{% csrf_token %}
+{% for e in form.non_field_errors %}<p class="err">{{ e }}</p>{% endfor %}
+{% for f in form %}{% if f.name|slice:":4" != "soc_" %}
+{% if f.field.widget.input_type == 'checkbox' %}<label class="chk">{{ f }} <span>{{ f.label }}</span></label>
+{% else %}<label class="lb">{{ f.label }}{{ f }}</label>{% endif %}
+{% if f.help_text %}<small class="mut">{{ f.help_text }}</small>{% endif %}
+{% for e in f.errors %}<p class="err">{{ e }}</p>{% endfor %}
+{% endif %}{% endfor %}
+<details class="social-fields"><summary>Social profile links <span>Expand to add or edit links</span></summary>
+<div class="social-fields-list">{% for f in form %}{% if f.name|slice:":4" == "soc_" %}
+<label class="lb">{{ f.label }}{{ f }}</label>{% if f.help_text %}<small class="mut">{{ f.help_text }}</small>{% endif %}
+{% for e in f.errors %}<p class="err">{{ e }}</p>{% endfor %}
+{% endif %}{% endfor %}</div></details>
+{% if is_platform_admin %}
+<p class="mut small">The address is used to show your location in Google Maps. The contact image is optional.</p>
+{% else %}
+<p class="mut small">Your business address is used for the Contact page and optional Google Maps display.</p>
+{% endif %}
+<button class="btn solid">Save settings</button></form>
+{% endblock %}

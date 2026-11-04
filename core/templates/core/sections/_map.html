@@ -1,0 +1,6 @@
+{% if site.business_address and site.show_map %}
+<div class="map-card">
+{% if map_embed_url %}<iframe src="{{ map_embed_url }}" title="Map showing {{ site.business_address }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>{% endif %}
+<div class="map-caption"><b>{{ site.business_address }}</b>{% if map_link %}<a href="{{ map_link }}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>{% endif %}</div>
+</div>
+{% endif %}

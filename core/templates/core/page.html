@@ -1,0 +1,3 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ name|capfirst }} · {{ site.name }}{% endblock %}
+{% block content %}<div class="sec page">{% include 'core/sections/'|add:name|add:'.html' %}</div>{% endblock %}

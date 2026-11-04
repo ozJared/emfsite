@@ -1,0 +1,15 @@
+{% extends 'core/dashboard/base.html' %}
+{% load site_tags %}
+{% block dash %}
+<div class="bar2"><a class="btn solid" href="{% url 'dash_item_new' kind %}">+ New {{ labels|get:kind }} item</a></div>
+<div class="list">
+{% for i in rows %}<div class="row2{% if not i.is_published %} dim{% endif %}">
+<i style="{% if i.card_image_url %}background:url('{{ i.card_image_url }}') center/cover{% else %}{% art i.hue %}{% endif %}"></i>
+<span>{{ i.title }}<small>{{ i.date|date:"M j, Y" }}{% if i.is_product %} · {{ i.price|money:site.currency }}{% endif %}{% if not i.is_published %} · Hidden{% endif %}</small></span>
+<a class="bt" href="{{ i.get_absolute_url }}">View</a>
+<a class="bt" href="{% url 'dash_item_edit' i.pk %}">Edit</a>
+<form method="post" action="{% url 'dash_item_toggle' i.pk %}">{% csrf_token %}<button>{% if i.is_published %}Hide{% else %}Show{% endif %}</button></form>
+<a class="bt" href="{% url 'dash_item_delete' i.pk %}" aria-label="Delete {{ i.title }}">Delete</a>
+</div>{% empty %}<p class="mut">Nothing here yet. Add the first one.</p>{% endfor %}
+</div>
+{% endblock %}

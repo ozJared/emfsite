@@ -1,0 +1,6 @@
+{% extends 'core/dashboard/base.html' %}
+{% block dash %}
+<h3>Delete “{{ item.title }}”?</h3>
+<p class="mut">This removes the item and its images for good. To keep it but hide it from visitors, use Hide instead.</p>
+<form method="post" class="row">{% csrf_token %}<button class="btn solid">Yes, delete</button><a class="btn ghost" href="{% url 'dash_items' item.kind %}">Keep it</a></form>
+{% endblock %}

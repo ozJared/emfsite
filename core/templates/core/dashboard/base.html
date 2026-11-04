@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block title %}Dashboard · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="sec page">
+<h1 class="dt">Dashboard</h1>
+<nav class="bar2" aria-label="Dashboard">
+<a class="chip{% if tab == 'overview' %} on{% endif %}" href="{% url 'dash' %}">Overview</a>
+{% for k in kinds %}<a class="chip{% if tab == k %} on{% endif %}" href="{% url 'dash_items' k %}">{{ labels|get:k }}</a>{% endfor %}
+<a class="chip{% if tab == 'orders' %} on{% endif %}" href="{% url 'dash_orders' %}">Orders</a>
+<a class="chip{% if tab == 'messages' %} on{% endif %}" href="{% url 'dash_messages' %}">Messages</a>
+<a class="chip{% if tab == 'settings' %} on{% endif %}" href="{% url 'dash_settings' %}">{% if is_platform_admin %}Settings{% else %}Profile{% endif %}</a>
+{% if is_platform_admin %}<a class="chip" href="{% url 'admin:auth_user_changelist' %}">Manage logins</a>{% endif %}
+<a class="chip" href="{% url 'home' %}">View site</a>
+</nav>
+{% block dash %}{% endblock %}
+</div>
+{% endblock %}

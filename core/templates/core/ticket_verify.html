@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% block title %}Ticket verification · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="sec page narrow">
+<h1 class="dt">Ticket verification</h1>
+<p class="pill">{% if ticket.is_valid %}Valid ticket{% else %}Invalid ticket{% endif %}</p>
+<p>{{ ticket.order_item.title }} · {{ ticket.code }}</p>
+{% if item %}<p class="mut">{{ item.date|date:"F j, Y" }}</p>{% endif %}
+</div>
+{% endblock %}

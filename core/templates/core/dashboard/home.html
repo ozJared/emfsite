@@ -1,0 +1,12 @@
+{% extends 'core/dashboard/base.html' %}
+{% load site_tags %}
+{% block dash %}
+{% if not site.wa_digits %}<div class="card pad warn"><b>Add your WhatsApp number.</b> Orders are sent to it. <a href="{% url 'dash_settings' %}">Open settings</a></div>{% endif %}
+<div class="grid g3 stats">
+<a class="card pad" href="{% url 'dash_orders' %}?status=new"><small class="acc">New orders</small><h3>{{ new_orders }}</h3></a>
+<a class="card pad" href="{% url 'dash_messages' %}"><small class="acc">Unread messages</small><h3>{{ unread }}</h3></a>
+{% for k in kinds %}<a class="card pad" href="{% url 'dash_items' k %}"><small class="acc">{{ labels|get:k }}</small><h3>{{ counts|get:k }} item{{ counts|get:k|pluralize }}</h3></a>{% endfor %}
+</div>
+<h3 class="mt">Latest orders</h3>
+<div class="list">{% for o in recent %}<a class="row2" href="{% url 'dash_order' o.pk %}"><span>#{{ o.pk }} · {{ o.name }}<small>{{ o.created|date:"M j, H:i" }} · {{ o.get_status_display }}</small></span><b>{{ o.total|money:o.currency }}</b></a>{% empty %}<p class="mut">No orders yet.</p>{% endfor %}</div>
+{% endblock %}

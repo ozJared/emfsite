@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% load site_tags %}
+{% block title %}{{ item.title }} · {{ site.name }}{% endblock %}
+{% block desc %}{% firstof item.summary site.blurb %}{% endblock %}
+{% block ogtitle %}{{ item.title }}{% endblock %}
+{% block ogdesc %}{% firstof item.summary site.blurb %}{% endblock %}
+{% block content %}
+<article class="sec page">
+<a class="back" href="{% url 'list' kind %}">← {{ labels|get:kind }}</a>
+<small class="mut">{{ item.date|date:"F j, Y" }}</small>
+{% if not item.is_published %} <span class="pill">Draft: only you can see this</span>{% endif %}
+<h1 class="dt">{{ item.title }}</h1>
+<div class="art wide" style="{% art item.hue %}">{% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.title }}" decoding="async"{% crop item %}>{% endif %}</div>
+<div class="prose">{% for p in item.paragraphs %}<p>{{ p }}</p>{% empty %}{% if item.summary %}<p>{{ item.summary }}</p>{% endif %}{% endfor %}</div>
+{% if is_owner %}<div class="row"><a class="btn ghost" href="{% url 'dash_item_edit' item.pk %}">Edit this item</a></div>{% endif %}
+{% if more %}<h2 class="mt">Keep reading</h2><div class="grid">{% for i in more %}{% include 'core/sections/_card.html' %}{% endfor %}</div>{% endif %}
+</article>
+{% endblock %}

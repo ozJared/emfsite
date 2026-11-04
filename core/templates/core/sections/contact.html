@@ -1,0 +1,31 @@
+{% load site_tags %}
+<div class="contact-layout">
+<section class="contact-story-card">
+{% if site.about_image or site.hero_image %}{% vis 'about.img' %}<div class="contact-story-image portrait" data-img="about" style="{% art 300 %}">{% if site.about_image %}<img src="{{ site.about_image.url }}" alt="" loading="lazy">{% else %}<img src="{{ site.hero_image.url }}" alt="" loading="lazy" class="{% if site.hero_mode == 'cutout' %}cut{% endif %}" style="object-position:50% 20%">{% endif %}</div>{% endvis %}{% endif %}
+<div class="contact-story-copy">
+{% with h="About "|add:site.name %}{% t 'a.t' h 'h2' 'contact-title' %}{% endwith %}
+{% t 'a.p' 'Tell your story here: where you started, what drives your work and what people can expect.' 'p' 'mut lede' %}
+<ul class="facts">
+<li>{% t 'a.k0' 'Based in' 'span' 'mut' %}{% t 'a.v0' 'Your city' 'b' %}</li>
+<li>{% t 'a.k1' 'Focus' 'span' 'mut' %}{% t 'a.v1' 'Your focus' 'b' %}</li>
+<li>{% t 'a.k2' 'Say hello' 'span' 'mut' %}{% t 'a.v2' 'hello@yourdomain.com' 'b' %}</li>
+</ul>
+{% if socs %}<nav class="about-socials" aria-label="Social profiles">{% for x in socs %}<a class="about-social" href="{{ x.u }}" target="_blank" rel="noopener noreferrer" aria-label="{{ x.label }}" title="{{ x.label }}">{% icon x.n 20 %}</a>{% endfor %}</nav>{% endif %}
+</div>
+</section>
+<section class="contact-message-card">
+{% if site.contact_image %}<div class="portrait contact-portrait" data-img="contact"><img src="{{ site.contact_image.url }}" alt="" loading="lazy"></div>{% endif %}
+<div class="contact-message-heading">
+{% t 'c.t' 'Let’s talk' 'h2' 'contact-title' %}{% t 'c.p' 'Bookings, orders and collaborations. Send a message and we’ll reply soon.' 'p' 'mut lede' %}
+{% if site.wa_digits %}{% vis 'c.wa' %}<a class="btn ghost contact-whatsapp" href="https://wa.me/{{ site.wa_digits }}" target="_blank" rel="noopener noreferrer">{% icon 'whatsapp' 20 %}<span>Chat on WhatsApp</span></a>{% endvis %}{% endif %}
+</div>
+{% vis 'c.form' %}<form class="form contact-form" method="post" action="{% url 'contact' %}">{% csrf_token %}
+{% for e in form.non_field_errors %}<p class="err">{{ e }}</p>{% endfor %}
+{{ form.name }}{% for e in form.name.errors %}<p class="err">{{ e }}</p>{% endfor %}
+{{ form.email }}{% for e in form.email.errors %}<p class="err">{{ e }}</p>{% endfor %}
+{{ form.body }}{% for e in form.body.errors %}<p class="err">{{ e }}</p>{% endfor %}
+<div class="hp" aria-hidden="true">{{ form.website }}</div>
+{% vis 'c.send' %}<button class="btn solid">{% t 'c.send.label' 'Send message' %}</button>{% endvis %}</form>{% endvis %}
+</section>
+</div>
+{% include 'core/sections/_map.html' %}

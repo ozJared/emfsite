@@ -1,0 +1,14 @@
+{% extends 'core/dashboard/base.html' %}
+{% load site_tags %}
+{% block dash %}
+<h3>{% if item %}Edit “{{ item.title }}”{% else %}New {{ labels|get:kind }} item{% endif %}</h3>
+<form class="form formw" method="post" enctype="multipart/form-data">{% csrf_token %}
+{% if kind == 'catalog' %}<div class="notice"><b>Spotify release?</b> Paste the track URL or Spotify’s iframe embed code below to fill the title and cover art automatically. No Spotify API credentials are needed.</div>{% endif %}
+{% include 'core/dashboard/_fields.html' %}
+{% if kind == 'catalog' %}
+<label class="lb">More product images (up to 12)<input type="file" name="gallery" accept="image/*" multiple></label>
+{% if item.gallery.all %}<div class="mgrid">{% for g in item.gallery.all %}<label class="gi"><img src="{{ g.image.url }}" alt=""><span><input type="checkbox" name="del_img" value="{{ g.pk }}"> Remove</span></label>{% endfor %}</div>{% endif %}
+{% endif %}
+<div class="row"><button class="btn solid">Save</button><a class="btn ghost" href="{% url 'dash_items' kind %}">Cancel</a>{% if item %}<a class="btn ghost" href="{% url 'dash_item_delete' item.pk %}">Delete</a>{% endif %}</div>
+</form>
+{% endblock %}

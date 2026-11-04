@@ -1,0 +1,31 @@
+{% load site_tags %}
+<div class="sec-h">{% t kind|add:'.t' labels|get:kind 'h2' %}{% vis kind|add:'.s' %}{% t kind|add:'.d' 'Tap an item to bring it into focus.' 'p' 'mut' %}{% endvis %}
+{% if edit %}<a class="btn solid" href="{% url 'dash_item_new' kind %}">+ New {{ labels|get:kind }}</a>{% endif %}</div>
+{% with f=list.0 %}
+{% if f %}
+{% vis 'focus.'|add:kind %}
+{% with focus_pk=f.pk|stringformat:'s' %}{% with focus_key='item-'|add:focus_pk %}{% vis focus_key 'focus-item' %}
+<div class="focus" data-focus>
+<div class="art" data-f-art style="{% art f.hue %}">{% if f.card_image_url %}<img src="{{ f.card_image_url }}" alt="" loading="lazy" decoding="async"{% crop f %}>{% endif %}</div>
+<div class="fi"><small class="acc" data-f-small>{% if kind == 'catalog' %}{{ labels|get:kind }}{% else %}{{ f.date|date:"M j, Y" }}{% endif %}</small>
+<h3 data-f-title>{{ f.title }}</h3>
+<p class="mut" data-f-sub>{% if f.is_product %}{{ f.price|money:site.currency }} · {% endif %}{{ f.summary }}</p>
+<div class="row"><a class="btn solid" data-f-link href="{{ f.get_absolute_url }}">Details</a><a class="btn ghost" href="{% url 'list' kind %}">See all</a></div></div>
+</div>
+{% endvis %}{% endwith %}{% endwith %}
+{% endvis %}
+{% if list|length > 1 %}{% vis kind|add:'.rail' 'rail-controls' %}
+<div class="railw"><button type="button" class="rb" data-rail="-1" aria-label="Previous">‹</button>
+{% if edit and kind == 'catalog' %}<p class="release-order-hint">Drag releases to reorder them, or use the arrows. The order saves automatically.</p>{% endif %}
+<div class="rail" data-rail-list{% if edit and kind == 'catalog' %} data-reorder-list="catalog"{% endif %}>
+{% for i in list %}{% with pk=i.pk|stringformat:'s' %}{% with viskey='item-'|add:pk %}{% vis viskey 'rail-item' %}
+{% if edit and kind == 'catalog' %}<div class="release-reorder"><button type="button" data-order-move="-1" aria-label="Move {{ i.title }} earlier" title="Move earlier">↑</button><button type="button" data-order-move="1" aria-label="Move {{ i.title }} later" title="Move later">↓</button></div>{% endif %}
+<button type="button" class="rc{% if forloop.first %} cur{% endif %}" data-focus-btn{% if edit and kind == 'catalog' %} draggable="true" data-order-id="{{ i.pk }}"{% endif %} data-title="{{ i.title }}"
+ data-small="{% if kind == 'catalog' %}{{ labels|get:kind }}{% else %}{{ i.date|date:'M j, Y' }}{% endif %}"
+ data-sub="{% if i.is_product %}{{ i.price|money:site.currency }} · {% endif %}{{ i.summary }}"
+ data-href="{{ i.get_absolute_url }}" data-art="{% art i.hue %}" data-img="{{ i.card_image_url }}" data-pos="{{ i.crop }}" aria-label="{{ i.title }}">
+<div class="art" style="{% art i.hue %}">{% if i.card_image_url %}<img src="{{ i.card_image_url }}" alt="{{ i.title }}" loading="lazy" decoding="async"{% crop i %}>{% endif %}</div><span>{{ i.title }}</span></button>{% endvis %}{% endwith %}{% endwith %}{% endfor %}
+</div><button type="button" class="rb" data-rail="1" aria-label="Next">›</button></div>
+{% endvis %}{% endif %}
+{% else %}<p class="mut">Nothing here yet.{% if edit %} Use “+ New” to add the first one.{% endif %}</p>{% endif %}
+{% endwith %}
